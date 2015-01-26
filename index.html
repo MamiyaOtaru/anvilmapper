@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 <title>Minecraft World Map</title>
@@ -6,7 +7,27 @@ You can set your own Google Maps API Key here:
 e.g. <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSxRT67cflfOI5g23bfGeQUcT6xY7Q3WbWA&sensor=false"></script>
 -->
 <script src="https://maps.googleapis.com/maps/api/js?&sensor=false"></script>
+ <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script>
+
+$(document).ready(function () {
+	setDIVHeight();
+});
+$(window).resize(function () {
+	setDIVHeight();
+});
+
+function setDIVHeight() {
+	var theDiv = $('div#map_canvas');
+	var divTop = theDiv.offset().top;
+	var winHeight = $(window).height();
+	var divHeight = winHeight - divTop - 50;
+	theDiv.height(divHeight);
+}
+
+
+
+
 var markerArray = [];
 var map = null;
 var markerVisibility = true;
@@ -46,6 +67,7 @@ function deleteAllMarkers() {
 
 function ProjectionCartesian() {};
 
+// this is surely off as I am using images of size 256 and not 512.  someone smarter than me figure it out
 ProjectionCartesian.prototype.fromLatLngToPoint = function(latLng) {
 	return new google.maps.Point(latLng.lng() * 512 / 32, latLng.lat() * 512 / 32);
 };
@@ -79,7 +101,7 @@ var iconPortal = {
 function initialize() {
 	var mapOptions = {
 		center: new google.maps.LatLng(0, 0),
-		zoom: 2,
+		zoom: 4,
 		streetViewControl: false,
 		zoomControl: true,
 		panControl: false,
@@ -94,22 +116,22 @@ function initialize() {
 	// can define multiple mapTypes (similar to how standard google maps has satellite, map, hybrid).
 	var mapTypeOverworld = new google.maps.ImageMapType({
 		getTileUrl: function(coord, zoom) {
-			var z = 5 - zoom;
-			return 'images/z' + z + '/' + coord.x + '.' + coord.y + '.png';
+			var z = Math.pow(2, zoom-4);
+			return 'Overworld/images/z' + z + '/' + coord.x + ',' + coord.y + '.png';
 		},
-		tileSize: new google.maps.Size(512, 512),
-		maxZoom: 6,
+		tileSize: new google.maps.Size(256, 256), // size of image.  their native size to display 1 to 1
+		maxZoom: 7,
 		minZoom: 0,
 		name: 'Overworld'
 	});
 	
 	var mapTypeNether = new google.maps.ImageMapType({
 		getTileUrl: function(coord, zoom) {
-			var z = 5 - zoom;
-			return 'images/DIM-1/z' + z + '/' + coord.x + '.' + coord.y + '.png';
+			var z = Math.pow(2, zoom-4);
+			return 'Nether/images/z' + z + '/' + coord.x + ',' + coord.y + '.png';
 		},
-		tileSize: new google.maps.Size(512, 512),
-		maxZoom: 6,
+		tileSize: new google.maps.Size(256, 256),
+		maxZoom: 7,
 		minZoom: 0,
 		name: 'Nether'
 	});
@@ -144,7 +166,7 @@ function initialize() {
 <body onload="initialize()">
 
 <h4>Minecraft World Map</h4>
-<div id="map_canvas" style="width: 800px; height: 600px;"></div>
+<div id="map_canvas" style="background-color:#000000; width: 100%; height: 100%;"></div>
 Right click map to show/hide markers.<br />
 Markers can be created by editing 'index.html'.<br />
 

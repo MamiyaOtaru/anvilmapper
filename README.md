@@ -1,16 +1,19 @@
-Anvil Mapper
+Voxelmap output image processor
 ============
 
 Usage Instructions:
-* Copy the contents of the world folder that you want mapped to 'world'.
-* The '*.mca' region files should now be in the 'world\region' folder.
-* Run 'run.bat'.
-* Generated region images will be output to 'images'.
+* run VoxelMap with this line in your voxelmap.properties file: "Output Images:true" (without quotes)
+* join the server or load the singleplayer world.
+* ensure you have your chosen resourcec pack loaded and it is the time of day you want, then pan around the world map.  All areas you view will be output
+* images will be created in /VoxelMods/voxelMap/cache/WORLDNAME(/optionalSubworldName)/dimensionName/images/z1
+* z1 is for zoom level 1, where one block is one pixel.
+* edit run.bat so the program argument is directory of the world you want to process (the /VoxelMods/voxelMap/cache/WORLDNAME part)
+* Run 'run.bat' 
+* each dimensions images folder will have added z2, z4, z8 folders for zooming in, and z0.5, z0.25, z0.125 and z0.0625 folders for zooming out
+* edit the java source to mot certain zoom levels (each zoom in quadruples the number of files).  If you have 1,000 region files, you will end up with 64,000 .pngs in z8
 * Open 'index.html' in a web browser to view the map.
 
 Compilation Instructions:
-* Depends on the region file code in MapWriter so you will need to clone MapWriter from GitHub to build AnvilMapper.
 * Compile using javac:
-    javac src\anvilmapper\AnvilMapper.java -sourcepath src -sourcepath ..\mapwriter\src -d bin
-* Make sure that you replace "..\mapwriter\src" with the directory you cloned mapwriter to.
+    javac src\anvilmapper\AnvilMapper.java -sourcepath src 
 

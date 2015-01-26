@@ -1,2 +1,2 @@
-javac src\anvilmapper\AnvilMapper.java -sourcepath src -sourcepath ..\mapwriter\src -d bin
+javac src\anvilmapper\AnvilMapper.java -sourcepath src bin
 pause
