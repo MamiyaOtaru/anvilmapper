@@ -11,6 +11,8 @@ Usage Instructions:
 * Run 'run.bat' 
 * each dimensions images folder will have added z2, z4, z8 folders for zooming in, and z0.5, z0.25, z0.125 and z0.0625 folders for zooming out
 * edit the java source to mot certain zoom levels (each zoom in quadruples the number of files).  If you have 1,000 region files, you will end up with 64,000 .pngs in z8
+* Make sure that you put the built images inside /Overworld for overworld images, in the same file that index.html in order to
+view the images properly.
 * Open 'index.html' in a web browser to view the map.
 
 Compilation Instructions:
