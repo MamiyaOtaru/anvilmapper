@@ -36,7 +36,7 @@ var markerVisibility = true;
 
 function addMarker(x, y, icon, title) {
 	var marker = new google.maps.Marker({
-		position: new google.maps.LatLng(y / 512, x / 512),
+		position: new google.maps.LatLng(y / 512 * 2, x / 512 * 2),
 		map: map,
 		icon: icon,
 		title: title + " (" + x + ", " + y + ")"
