@@ -71,7 +71,7 @@ public class AnvilMapper {
     							}
     						} 
     						else {
-    							System.out.println("image file " + imageFile + "did not pass the file name check");
+    							System.out.println("image file " + imageFile + " did not pass the file name check");
     						}
     					}
     				}
