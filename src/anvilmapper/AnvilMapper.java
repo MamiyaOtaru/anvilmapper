@@ -186,7 +186,7 @@ public class AnvilMapper {
 		int existingComponentImages = 0;
 		float zoom = (float)Math.pow(2, shiftZoom);
 		int zoomOut = (int)(1f/zoom);
-		int size = 256;
+		int size = 256 * zoomOut;
 		int splitSize = size / zoomOut;
 		BufferedImage combinedImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g = combinedImage.createGraphics();
@@ -210,7 +210,7 @@ public class AnvilMapper {
 							componentImage = temp;
 						}
 						existingComponentImages++;
-						g.drawImage(componentImage, componentX*splitSize, componentZ*splitSize, (componentX+1)*splitSize, (componentZ+1)*splitSize, 0, 0, size, size, null);
+						g.drawImage(componentImage, componentX*splitSize, componentZ*splitSize, (componentX+1)*splitSize, (componentZ+1)*splitSize, 0, 0, splitSize, splitSize, null);
 					} 
 					catch (IOException e) {
 						e.printStackTrace();
