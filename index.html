@@ -1,170 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft World Map</title>
-    <!--
-    You can set your own Google Maps API Key here:
-    e.g. <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSxRT67cflfOI5g23bfGeQUcT6xY7Q3WbWA&sensor=false"></script>
-    -->
-    <script src="https://maps.googleapis.com/maps/api/js?&sensor=false"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
-    <script>
-      $(document).ready(function () {
-        setDIVHeight();
-      });
-      $(window).resize(function () {
-        setDIVHeight();
-      });
-
-      function setDIVHeight() {
-        var theDiv = $('div#map_canvas');
-        var divTop = theDiv.offset().top;
-        var winHeight = $(window).height();
-        var divHeight = winHeight - divTop - 50;
-        theDiv.height(divHeight);
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
       }
-
-
-      var markerArray = [];
-      var map = null;
-      var markerVisibility = true;
-
-      // functions to add, hide, and delete markers
-
-      function addMarker(x, y, icon, title) {
-        var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(y / 512, x / 512),
-          map: map,
-          icon: icon,
-          title: title + " (" + x + ", " + y + ")"
-        });
-        markerArray.push(marker);
+      html, body {
+        height: 100%;
+        width: 100vw;
       }
-
-      function toggleAllMarkers() {
-        markerVisibility = !markerVisibility;
-        for (i in markerArray) {
-          markerArray[i].setVisible(markerVisibility);
-        }
+      h4 {
+        padding: 0.25em;
+        height: 5vh;
       }
-
-      function deleteAllMarkers() {
-        for (i in markerArray) {
-          markerArray[i].setMap(null);
-        }
-        markerArray.length = 0;
+      #map_canvas {
+        background-color: #000000;
+        height: 95vh;
+        width: 100vw;
       }
-
-      // custom projection
-      // lat range is [-4,4] corresponding to y [-512,512] in the zoom level 0 image set
-      // lng range is [-4,4] corresponding to x [-512,512] in the zoom level 0 image set
-      // in terms of game coordinates:
-      //   inGameX = lng * 1024
-      //   inGameZ = lat * 1024
-
-      function ProjectionCartesian() {};
-
-      // this is surely off as I am using images of size 256 and not 512.  someone smarter than me figure it out
-      ProjectionCartesian.prototype.fromLatLngToPoint = function(latLng) {
-        return new google.maps.Point(latLng.lng() * 512 / 32, latLng.lat() * 512 / 32);
-      };
-
-      ProjectionCartesian.prototype.fromPointToLatLng = function(point, noWrap) {
-        return new google.maps.LatLng(point.y / 512 * 32, point.x / 512 * 32, noWrap);
-      };
-
-      // icon definitions for markers
-
-      var iconSpawn = {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillColor: "red",
-        fillOpacity: 1.0,
-        scale: 4,
-        strokeColor: "black",
-        strokeWeight: 1
-      };
-
-      var iconPortal = {
-        path: 'M -1,-1 1,-1 1,1 -1,1 z',
-        fillColor: "purple",
-        fillOpacity: 1.0,
-        scale: 4,
-        strokeColor: "black",
-        strokeWeight: 1
-      };
-
-      // the initialization function, called when the page body loads
-
-      function initialize() {
-        var mapOptions = {
-          center: new google.maps.LatLng(0, 0),
-          zoom: 4,
-          streetViewControl: false,
-          zoomControl: true,
-          panControl: false,
-          scaleControl: false,
-          mapTypeControlOptions: {
-            mapTypeIds: ['overworld', 'nether']
-          }
-        };
-
-        map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
-
-        // can define multiple mapTypes (similar to how standard google maps has satellite, map, hybrid).
-        var mapTypeOverworld = new google.maps.ImageMapType({
-          getTileUrl: function(coord, zoom) {
-            var z = Math.pow(2, zoom-4);
-            return 'Overworld/images/z' + z + '/' + coord.x + ',' + coord.y + '.png';
-          },
-          tileSize: new google.maps.Size(256, 256), // size of image.  their native size to display 1 to 1
-          maxZoom: 7,
-          minZoom: 0,
-          name: 'Overworld'
-        });
-
-        var mapTypeNether = new google.maps.ImageMapType({
-          getTileUrl: function(coord, zoom) {
-            var z = Math.pow(2, zoom-4);
-            return 'Nether/images/z' + z + '/' + coord.x + ',' + coord.y + '.png';
-          },
-          tileSize: new google.maps.Size(256, 256),
-          maxZoom: 7,
-          minZoom: 0,
-          name: 'Nether'
-        });
-
-        // use the custom latitude and logitude projection
-        mapTypeOverworld.projection = new ProjectionCartesian();
-        mapTypeNether.projection = new ProjectionCartesian();
-
-        // add the map type to the map
-        map.mapTypes.set('overworld', mapTypeOverworld);
-        map.mapTypes.set('nether', mapTypeNether);
-        map.setMapTypeId('overworld');
-
-        // listener for clicks on the map surface
-        google.maps.event.addListener(map, 'rightclick', function(event) {
-          toggleAllMarkers();
-        });
-
-        // add markers
-        //addMarker(0, 0, iconSpawn, "origin");
-        //addMarker(-512, 512, iconSpawn, "");
-        //addMarker(512, -512, iconSpawn, "");
-        //addMarker(-506, -262, iconPortal, "end portal");
-        //addMarker(948, -288, iconPortal, "end portal");
-        //addMarker(-71, 846, iconPortal, "end portal");
-      }
-    </script>
+    </style>
   </head>
 
-  <body onload="initialize()">
-
+  <body>
     <h4>Minecraft World Map</h4>
-    <div id="map_canvas" style="background-color:#000000; width: 100%; height: 100%;"></div>
-    Right click map to show/hide markers.<br />
-    Markers can be created by editing 'index.html'.<br />
-
+    <div id="map_canvas"></div>
+    <!-- Right click map to show/hide markers.<br />
+    Markers can be created by editing 'index.html'.<br /> -->
   </body>
 </html>
