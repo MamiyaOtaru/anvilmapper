@@ -44,8 +44,6 @@
   <body>
     <h4>Minecraft World Map</h4>
     <div id="map_canvas"></div>
-    <!-- Right click map to show/hide markers.<br />
-    Markers can be created by editing 'index.html'.<br /> -->
 
     <script>
 
@@ -64,7 +62,7 @@
       var mymap = L.map('map_canvas', {
         crs: L.CRS.Simple,
         zoom: 0,
-        center: L.latLng([127, 127]),
+        center: L.latLng([127, 127]), // x, -y
       });
 
 
@@ -72,7 +70,7 @@
       const pathToTileImgs = ``;
 
 
-      L.tileLayer(pathToTileImgs + '/overworld/images/z{myzoom}/{x},{y}.png', {
+      var overworldLayer = L.tileLayer(pathToTileImgs + '/overworld/images/z{myzoom}/{x},{y}.png', {
         myzoom: function(data) {
           /*
             -2 -> 0.25
@@ -89,8 +87,26 @@
         minNativeZoom: minZoom,
         maxZoom: 2,
         maxNativeZoom: maxZoom,
-        id: 'overworld',
         tileSize: 256
+      });
+      var netherLayer = L.tileLayer(pathToTileImgs + '/the_nether/images/z{myzoom}/{x},{y}.png', {
+        myzoom: function(data) {
+          let calculated = Math.pow(2, data.z);
+          return calculated;
+        },
+        attribution: 'voxelmap',
+        minZoom: -4,
+        minNativeZoom: 0, // to avoid losing detail, since the images are stretched x8
+        maxZoom: 2,
+        maxNativeZoom: maxZoom,
+        tileSize: 2048
+      });
+
+      overworldLayer.addTo(mymap);
+
+      L.control.layers({
+        "Overworld": overworldLayer,
+        "The Nether": netherLayer
       }).addTo(mymap);
 
     </script>
